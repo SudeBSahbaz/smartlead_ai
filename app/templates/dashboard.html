@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ENCORE | Yönetim</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f6fa;
+            color: #1b1d2a;
+        }
+        main {
+            width: min(980px, calc(100% - 32px));
+            margin: 50px auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #e2e4ed;
+            text-align: left;
+            vertical-align: top;
+        }
+        th { background: #eceeff; }
+    </style>
+</head>
+<body>
+<main>
+    <h1>ENCORE Yönetim Paneli</h1>
+    <p>Toplanan müşteri adayları aşağıda listelenir.</p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>İsim</th>
+                <th>Telefon</th>
+                <th>Mesaj</th>
+                <th>Tarih</th>
+            </tr>
+        </thead>
+        <tbody id="leadRows"></tbody>
+    </table>
+</main>
+
+<script>
+    async function leadleriYukle() {
+        const response = await fetch("/api/leads");
+        const data = await response.json();
+
+        const tbody = document.getElementById("leadRows");
+
+        if (!data.basari) {
+            tbody.innerHTML = `<tr><td colspan="5">${data.hata}</td></tr>`;
+            return;
+        }
+
+        if (!data.leads.length) {
+            tbody.innerHTML = '<tr><td colspan="5">Henüz lead yok.</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = data.leads.map(lead => `
+            <tr>
+                <td>${lead.id ?? ""}</td>
+                <td>${lead.isim ?? ""}</td>
+                <td>${lead.telefon ?? ""}</td>
+                <td>${lead.mesaj ?? ""}</td>
+                <td>${lead.tarih ?? ""}</td>
+            </tr>
+        `).join("");
+    }
+
+    leadleriYukle();
+</script>
+</body>
+</html>
