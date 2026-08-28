@@ -25,6 +25,14 @@ def dashboard():
 # --------------------------------------------------
 # API ROTALARI
 # --------------------------------------------------
+@api.route("/health", methods=["GET"])
+def health():
+    return jsonify(
+        {
+            "basari": True,
+            "durum": "ok",
+        }
+    ), 200
 
 @api.route("/sohbet", methods=["POST"])
 def sohbet():
